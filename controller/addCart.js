@@ -1,15 +1,32 @@
-const Cart = async (req, res) => {
+const Cartmodel = require("../models/cart");
+const statusCodes = require("../easy/status_code");
+const {validationCart} = require("../easy/validation");
+
+
+
+const  Cart  = async (req, res) => {
   try {
-    const { userid } = req;
+    
+    const  {userid, item , amount} =  req.body
+    
+     const { error }  = validationCart.validate(req.body)
 
-    const { item } = req.body;
+if (error) {
+      return res
+        .status(statusCodes.BAD_REQUEST.code)
+        .json({ error: "error in validation part", error });
+    }
 
-    await CartItem.create({ userId, item });
+    await Cartmodel.create({ userid, item, amount });
 
-    res.status(200).json({ message: "Item added to cart successfully" });
+    res
+      .status(statusCodes.SUCCESS.code)
+      .json({ message: "Item added to cart successfully" });
   } catch (error) {
-    res.status(200).json({ error: "Error adding item to cart" });
+   return  res
+      .status(statusCodes.BAD_REQUEST.code)
+      .json({ error: "Error adding item to cart", error });
   }
 };
 
-module.exports = Cart;
+module.exports = { Cart };

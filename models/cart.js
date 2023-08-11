@@ -1,39 +1,31 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./sequlize");
 const User = require("./users");
-const Product = require("./product");
+const OrderDetail = require("./order");
+const dataTypes = require("sequelize/lib/data-types");
 
-const OrderDetail = sequelize.define("order_details", {
+const Cartmodel = sequelize.define("cart_items", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
   },
-  item: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  userId: {
-    type: DataTypes.NUMBER,
+  userid: {
+    type: dataTypes.INTEGER,
     allowNull: false,
     references: {
       model: User,
       key: "id",
     },
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
+  },    
+  item: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-
-  productId: {
+  amount: {
     type: DataTypes.INTEGER,
-
-    references: {
-      model: Product,
-      key: "id",
-    },
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -47,4 +39,6 @@ const OrderDetail = sequelize.define("order_details", {
   },
 });
 
-module.exports = OrderDetail;
+Cartmodel.belongsTo(User, { foreignKey: "userid" });
+
+module.exports = Cartmodel;
